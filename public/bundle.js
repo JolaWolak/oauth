@@ -25909,23 +25909,23 @@
 	
 	var _Login2 = _interopRequireDefault(_Login);
 	
-	var _Signup = __webpack_require__(311);
+	var _Signup = __webpack_require__(312);
 	
 	var _Signup2 = _interopRequireDefault(_Signup);
 	
-	var _UserList = __webpack_require__(312);
+	var _UserList = __webpack_require__(313);
 	
 	var _UserList2 = _interopRequireDefault(_UserList);
 	
-	var _UserDetail = __webpack_require__(314);
+	var _UserDetail = __webpack_require__(315);
 	
 	var _UserDetail2 = _interopRequireDefault(_UserDetail);
 	
-	var _StoryList = __webpack_require__(317);
+	var _StoryList = __webpack_require__(318);
 	
 	var _StoryList2 = _interopRequireDefault(_StoryList);
 	
-	var _StoryDetail = __webpack_require__(318);
+	var _StoryDetail = __webpack_require__(319);
 	
 	var _StoryDetail2 = _interopRequireDefault(_StoryDetail);
 	
@@ -31904,6 +31904,8 @@
 	
 	var _reactRouter = __webpack_require__(245);
 	
+	var _login = __webpack_require__(311);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -32019,7 +32021,12 @@
 	      var message = this.props.message;
 	
 	      event.preventDefault();
-	      console.log(message + ' isn\'t implemented yet');
+	      var user = {
+	        email: event.target.email.value,
+	        password: event.target.password.value
+	      };
+	      console.log(user);
+	      this.props.loginUser(user);
 	    }
 	  }]);
 	
@@ -32031,12 +32038,67 @@
 	var mapState = function mapState() {
 	  return { message: 'Log in' };
 	};
-	var mapDispatch = null;
-	
+	var mapDispatch = { loginUser: _login.loginUser };
 	exports.default = (0, _reactRedux.connect)(mapState, mapDispatch)(Login);
 
 /***/ },
 /* 311 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.loginUser = undefined;
+	exports.default = reducer;
+	
+	var _axios = __webpack_require__(218);
+	
+	var _axios2 = _interopRequireDefault(_axios);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	/* -----------------    ACTIONS     ------------------ */
+	
+	var SET_CURRENT_USER = 'SET_CURRENT_USER';
+	
+	/* ------------   ACTION CREATORS     ------------------ */
+	
+	var setUser = function setUser(user) {
+	  return { type: SET_CURRENT_USER, user: user };
+	};
+	
+	/* ------------       REDUCER     ------------------ */
+	
+	function reducer() {
+	  var user = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+	  var action = arguments[1];
+	
+	  switch (action.type) {
+	
+	    case SET_CURRENT_USER:
+	      return action.user;
+	
+	    default:
+	      return user;
+	  }
+	}
+	
+	/* ------------       DISPATCHERS     ------------------ */
+	
+	var loginUser = exports.loginUser = function loginUser(user) {
+	  return function (dispatch) {
+	    _axios2.default.post('/login', user).then(function (res) {
+	      return console.log('We authenticated user : ', res);
+	    }).catch(function (error) {
+	      return console.error('Not able to login the user ' + error);
+	    });
+	  };
+	};
+
+/***/ },
+/* 312 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -32187,7 +32249,7 @@
 	exports.default = (0, _reactRedux.connect)(mapState, mapDispatch)(Signup);
 
 /***/ },
-/* 312 */
+/* 313 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -32208,7 +32270,7 @@
 	
 	var _users = __webpack_require__(217);
 	
-	var _UserItem = __webpack_require__(313);
+	var _UserItem = __webpack_require__(314);
 	
 	var _UserItem2 = _interopRequireDefault(_UserItem);
 	
@@ -32421,7 +32483,7 @@
 	exports.default = (0, _reactRedux.connect)(mapState, mapDispatch)(UserList);
 
 /***/ },
-/* 313 */
+/* 314 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -32563,7 +32625,7 @@
 	exports.default = (0, _reactRedux.connect)(mapState, mapDispatch)(UserItem);
 
 /***/ },
-/* 314 */
+/* 315 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -32582,15 +32644,15 @@
 	
 	var _reactRedux = __webpack_require__(178);
 	
-	var _lodash = __webpack_require__(315);
+	var _lodash = __webpack_require__(316);
 	
 	var _lodash2 = _interopRequireDefault(_lodash);
 	
-	var _UserItem = __webpack_require__(313);
+	var _UserItem = __webpack_require__(314);
 	
 	var _UserItem2 = _interopRequireDefault(_UserItem);
 	
-	var _StoryItem = __webpack_require__(316);
+	var _StoryItem = __webpack_require__(317);
 	
 	var _StoryItem2 = _interopRequireDefault(_StoryItem);
 	
@@ -32711,7 +32773,7 @@
 	exports.default = (0, _reactRedux.connect)(mapState, mapDispatch)(UserDetail);
 
 /***/ },
-/* 315 */
+/* 316 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(global, module) {/**
@@ -49783,7 +49845,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(199)(module)))
 
 /***/ },
-/* 316 */
+/* 317 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -49888,7 +49950,7 @@
 	exports.default = (0, _reactRedux.connect)(mapState, mapDispatch)(StoryItem);
 
 /***/ },
-/* 317 */
+/* 318 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -49907,7 +49969,7 @@
 	
 	var _reactRedux = __webpack_require__(178);
 	
-	var _StoryItem = __webpack_require__(316);
+	var _StoryItem = __webpack_require__(317);
 	
 	var _StoryItem2 = _interopRequireDefault(_StoryItem);
 	
@@ -50107,7 +50169,7 @@
 	exports.default = (0, _reactRedux.connect)(mapState, mapDispatch)(StoryList);
 
 /***/ },
-/* 318 */
+/* 319 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -50124,11 +50186,11 @@
 	
 	var _reactRedux = __webpack_require__(178);
 	
-	var _lodash = __webpack_require__(315);
+	var _lodash = __webpack_require__(316);
 	
 	var _lodash2 = _interopRequireDefault(_lodash);
 	
-	var _reactContenteditable = __webpack_require__(319);
+	var _reactContenteditable = __webpack_require__(320);
 	
 	var _reactContenteditable2 = _interopRequireDefault(_reactContenteditable);
 	
@@ -50282,7 +50344,7 @@
 	exports.default = (0, _reactRedux.connect)(mapState, mapDispatch)(StoryDetail);
 
 /***/ },
-/* 319 */
+/* 320 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';

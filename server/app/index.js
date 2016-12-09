@@ -27,15 +27,19 @@ app.use(function (req, res, next) {
 });
 
 app.post('/login', function (req, res, next) {
+  console.log('inside app.post : ', req.body);
   User.findOne({
     where: req.body
   })
   .then(function (user) {
     if (!user) {
+      console.log('NOT FOUND!!! ');
       res.sendStatus(401);
     } else {
       req.session.userId = user.id;
-      res.sendStatus(204);
+      console.log('FOUND IT !!! ', req.session);
+      console.log('USER is : ',user);
+      res.json(user);
     }
   })
   .catch(next);

@@ -28,8 +28,9 @@ export default function reducer (user = {}, action) {
 
 /* ------------       DISPATCHERS     ------------------ */
 
-export const onSubmitLogin = () => dispatch => {
-  axios.post('/login')
-       .then(res => dispatch(setUser(res.data)));
+export const loginUser = (user) => dispatch => {
+  axios.post('/login',user)
+       .then(res => (console.log('We authenticated user : ',res)))
+       .catch(error => console.error('Not able to login the user '+ error));
 }
 
