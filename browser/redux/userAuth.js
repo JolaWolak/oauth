@@ -1,4 +1,5 @@
 import axios from 'axios';
+import {browserHistory} from 'react-router';
 
 /* -----------------    ACTIONS     ------------------ */
 
@@ -30,14 +31,23 @@ export default function reducer (user = {}, action) {
 
 export const loginUser = (user) => dispatch => {
   axios.post('/login',user)
-       .then(res => (console.log('We authenticated user : ',res)))
+       .then(res => (dispatch(setUser(user))))
        .catch(error => console.error('Not able to login the user ', error));
+  browserHistory.push('/');
 }
 
 export const signUp = (user) => dispatch => {
   axios.post('/signup',user)
-    .then(res => (console.log('User created: ', res)))
-    .catch(error => console.error('User could not be created', error))
+    .then(res => (dispatch(setUser(user))))
+    .catch(error => console.error('User could not be created', error));
+  browserHistory.push('/');
+}
+
+export const logout = () => dispatch => {
+  axios.post('/logout')
+      .then(res => dispatch(setUser({})))
+      .catch(error => console.error('Logout unsuccessful ', error)); 
+    browserHistory.push('/');
 }
 
 

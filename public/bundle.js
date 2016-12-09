@@ -24162,9 +24162,13 @@
 	
 	var _stories2 = _interopRequireDefault(_stories);
 	
+	var _userAuth = __webpack_require__(308);
+	
+	var _userAuth2 = _interopRequireDefault(_userAuth);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	exports.default = (0, _redux.combineReducers)({ users: _users2.default, stories: _stories2.default });
+	exports.default = (0, _redux.combineReducers)({ users: _users2.default, stories: _stories2.default, currentUser: _userAuth2.default });
 
 /***/ },
 /* 217 */
@@ -25901,11 +25905,11 @@
 	
 	var _Root2 = _interopRequireDefault(_Root);
 	
-	var _Home = __webpack_require__(309);
+	var _Home = __webpack_require__(310);
 	
 	var _Home2 = _interopRequireDefault(_Home);
 	
-	var _Login = __webpack_require__(310);
+	var _Login = __webpack_require__(311);
 	
 	var _Login2 = _interopRequireDefault(_Login);
 	
@@ -31529,7 +31533,7 @@
 	
 	var _Navbar2 = _interopRequireDefault(_Navbar);
 	
-	var _Footer = __webpack_require__(308);
+	var _Footer = __webpack_require__(309);
 	
 	var _Footer2 = _interopRequireDefault(_Footer);
 	
@@ -31570,7 +31574,7 @@
 	
 	var _reactRouter = __webpack_require__(245);
 	
-	var _userAuth = __webpack_require__(321);
+	var _userAuth = __webpack_require__(308);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -31592,6 +31596,7 @@
 	
 	    _this.renderLoginSignup = _this.renderLoginSignup.bind(_this);
 	    _this.renderLogout = _this.renderLogout.bind(_this);
+	    _this.onLogout = _this.onLogout.bind(_this);
 	    return _this;
 	  }
 	
@@ -31693,11 +31698,17 @@
 	          _react2.default.createElement(
 	            'button',
 	            { className: 'navbar-btn btn btn-default',
-	              onClick: this.props.logout },
+	              onClick: this.onLogout },
 	            'logout'
 	          )
 	        )
 	      );
+	    }
+	  }, {
+	    key: 'onLogout',
+	    value: function onLogout(event) {
+	      event.preventDefault();
+	      this.props.logout();
 	    }
 	  }]);
 	
@@ -31708,23 +31719,93 @@
 	
 	var mapProps = null;
 	
-	var mapDispatch = function mapDispatch(dispatch) {
-	  return {
-	    logout: function logout() {
-	      _axios2.default.post('/logout').then(function (res) {
-	        return console.log('You signed out. ', res);
-	      }).catch(function (error) {
-	        return console.error('Logout unsuccessful ', error);
-	      });
-	      _reactRouter.browserHistory.push('/');
-	    }
-	  };
-	};
+	var mapDispatch = { logout: _userAuth.logout };
 	
 	exports.default = (0, _reactRedux.connect)(mapProps, mapDispatch)(Navbar);
 
 /***/ },
 /* 308 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.logout = exports.signUp = exports.loginUser = undefined;
+	exports.default = reducer;
+	
+	var _axios = __webpack_require__(218);
+	
+	var _axios2 = _interopRequireDefault(_axios);
+	
+	var _reactRouter = __webpack_require__(245);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	/* -----------------    ACTIONS     ------------------ */
+	
+	var SET_CURRENT_USER = 'SET_CURRENT_USER';
+	
+	/* ------------   ACTION CREATORS     ------------------ */
+	
+	var setUser = function setUser(user) {
+	  return { type: SET_CURRENT_USER, user: user };
+	};
+	
+	/* ------------       REDUCER     ------------------ */
+	
+	function reducer() {
+	  var user = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+	  var action = arguments[1];
+	
+	  switch (action.type) {
+	
+	    case SET_CURRENT_USER:
+	      return action.user;
+	
+	    default:
+	      return user;
+	  }
+	}
+	
+	/* ------------       DISPATCHERS     ------------------ */
+	
+	var loginUser = exports.loginUser = function loginUser(user) {
+	  return function (dispatch) {
+	    _axios2.default.post('/login', user).then(function (res) {
+	      return dispatch(setUser(user));
+	    }).catch(function (error) {
+	      return console.error('Not able to login the user ', error);
+	    });
+	    _reactRouter.browserHistory.push('/');
+	  };
+	};
+	
+	var signUp = exports.signUp = function signUp(user) {
+	  return function (dispatch) {
+	    _axios2.default.post('/signup', user).then(function (res) {
+	      return dispatch(setUser(user));
+	    }).catch(function (error) {
+	      return console.error('User could not be created', error);
+	    });
+	    _reactRouter.browserHistory.push('/');
+	  };
+	};
+	
+	var logout = exports.logout = function logout() {
+	  return function (dispatch) {
+	    _axios2.default.post('/logout').then(function (res) {
+	      return dispatch(setUser({}));
+	    }).catch(function (error) {
+	      return console.error('Logout unsuccessful ', error);
+	    });
+	    _reactRouter.browserHistory.push('/');
+	  };
+	};
+
+/***/ },
+/* 309 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -31766,7 +31847,7 @@
 	};
 
 /***/ },
-/* 309 */
+/* 310 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -31895,7 +31976,7 @@
 	};
 
 /***/ },
-/* 310 */
+/* 311 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -31914,7 +31995,7 @@
 	
 	var _reactRouter = __webpack_require__(245);
 	
-	var _userAuth = __webpack_require__(321);
+	var _userAuth = __webpack_require__(308);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -32052,7 +32133,6 @@
 	exports.default = (0, _reactRedux.connect)(mapState, mapDispatch)(Login);
 
 /***/ },
-/* 311 */,
 /* 312 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -32072,7 +32152,7 @@
 	
 	var _reactRouter = __webpack_require__(245);
 	
-	var _userAuth = __webpack_require__(321);
+	var _userAuth = __webpack_require__(308);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -50190,10 +50270,15 @@
 	    value: function render() {
 	      var _this2 = this;
 	
+	      console.log(this.props);
 	      var _props = this.props,
 	          users = _props.users,
-	          story = _props.story;
+	          story = _props.story,
+	          currentUser = _props.currentUser;
+	      //if (!user) isNotLoggedIn
 	
+	      var isNotLoggedIn = Object.keys(currentUser).length === 0;
+	      console.log('isNotLoggedIn ', isNotLoggedIn);
 	      if (!story) return _react2.default.createElement('div', null); // the story id is invalid or the data isnt loaded yet
 	      return _react2.default.createElement(
 	        'div',
@@ -50206,6 +50291,8 @@
 	            null,
 	            _react2.default.createElement('input', {
 	              className: 'form-like large-font',
+	              disabled: isNotLoggedIn,
+	
 	              defaultValue: story.title,
 	              onChange: function onChange(e) {
 	                return _this2.onStoryUpdate({ title: e.target.value });
@@ -50290,14 +50377,15 @@
 	
 	var mapState = function mapState(_ref, ownProps) {
 	  var stories = _ref.stories,
-	      users = _ref.users;
+	      users = _ref.users,
+	      currentUser = _ref.currentUser;
 	
 	  var id = Number(ownProps.params.id);
 	  var story = _lodash2.default.find(stories, function (story) {
 	    return story.id === id;
 	  });
 	
-	  return { story: story, users: users };
+	  return { story: story, users: users, currentUser: currentUser };
 	};
 	
 	var mapDispatch = { updateStory: _stories.updateStory };
@@ -50407,72 +50495,6 @@
 	
 	exports.default = ContentEditable;
 	module.exports = exports['default'];
-
-/***/ },
-/* 321 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.signUp = exports.loginUser = undefined;
-	exports.default = reducer;
-	
-	var _axios = __webpack_require__(218);
-	
-	var _axios2 = _interopRequireDefault(_axios);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	/* -----------------    ACTIONS     ------------------ */
-	
-	var SET_CURRENT_USER = 'SET_CURRENT_USER';
-	
-	/* ------------   ACTION CREATORS     ------------------ */
-	
-	var setUser = function setUser(user) {
-	  return { type: SET_CURRENT_USER, user: user };
-	};
-	
-	/* ------------       REDUCER     ------------------ */
-	
-	function reducer() {
-	  var user = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-	  var action = arguments[1];
-	
-	  switch (action.type) {
-	
-	    case SET_CURRENT_USER:
-	      return action.user;
-	
-	    default:
-	      return user;
-	  }
-	}
-	
-	/* ------------       DISPATCHERS     ------------------ */
-	
-	var loginUser = exports.loginUser = function loginUser(user) {
-	  return function (dispatch) {
-	    _axios2.default.post('/login', user).then(function (res) {
-	      return console.log('We authenticated user : ', res);
-	    }).catch(function (error) {
-	      return console.error('Not able to login the user ', error);
-	    });
-	  };
-	};
-	
-	var signUp = exports.signUp = function signUp(user) {
-	  return function (dispatch) {
-	    _axios2.default.post('/signup', user).then(function (res) {
-	      return console.log('User created: ', res);
-	    }).catch(function (error) {
-	      return console.error('User could not be created', error);
-	    });
-	  };
-	};
 
 /***/ }
 /******/ ]);

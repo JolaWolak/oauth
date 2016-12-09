@@ -3,6 +3,7 @@ import axios from 'axios';
 import { connect } from'react-redux';
 import { Link, browserHistory } from 'react-router';
 import { logout } from '../redux/userAuth';
+import { setUser } from '../redux/userAuth';
 
 /* -----------------    COMPONENT     ------------------ */
 
@@ -11,6 +12,7 @@ class Navbar extends React.Component {
     super(props);
     this.renderLoginSignup = this.renderLoginSignup.bind(this);
     this.renderLogout = this.renderLogout.bind(this);
+    this.onLogout = this.onLogout.bind(this);
   }
 
   render() {
@@ -64,24 +66,22 @@ class Navbar extends React.Component {
       <ul className="nav navbar-nav navbar-right">
         <li>
         <button className="navbar-btn btn btn-default" 
-          onClick={this.props.logout}>logout</button>
+          onClick={this.onLogout}>logout</button>
         </li>
       </ul>
     );
+  }
+
+  onLogout(event) {
+    event.preventDefault();
+    this.props.logout()
   }
 }
 
 /* -----------------    CONTAINER     ------------------ */
 
-const mapProps = null;
+const mapProps = null
 
-const mapDispatch = dispatch => ({
-  logout: () => {
-    axios.post('/logout')
-      .then(res => console.log('You signed out. ', res))
-      .catch(error => console.error('Logout unsuccessful ', error)); 
-    browserHistory.push('/');
-  }
-})
+const mapDispatch = { logout }
 
 export default connect(mapProps, mapDispatch)(Navbar);

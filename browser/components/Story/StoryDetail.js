@@ -20,7 +20,11 @@ class StoryDetail extends React.Component {
   }
 
   render() {
-    const {users, story} = this.props;
+    console.log(this.props);
+    const {users, story, currentUser} = this.props;
+    //if (!user) isNotLoggedIn
+    const isNotLoggedIn = (Object.keys(currentUser).length===0);
+    console.log('isNotLoggedIn ', isNotLoggedIn);
     if (!story) return <div></div> // the story id is invalid or the data isnt loaded yet
     return (
       <div className="container story-container">
@@ -28,6 +32,8 @@ class StoryDetail extends React.Component {
           <li>
             <input 
               className="form-like large-font"
+              disabled={isNotLoggedIn}
+
               defaultValue={story.title}
               onChange={e => this.onStoryUpdate({ title: e.target.value })}
             />
@@ -85,11 +91,11 @@ class StoryDetail extends React.Component {
 
 /* -----------------    CONTAINER     ------------------ */
 
-const mapState = ({ stories, users }, ownProps) => {
+const mapState = ({ stories, users, currentUser }, ownProps) => {
   const id = Number(ownProps.params.id);
   const story = _.find(stories, story => story.id === id);
   
-  return { story, users }
+  return { story, users, currentUser }
 }
 
 const mapDispatch = { updateStory }

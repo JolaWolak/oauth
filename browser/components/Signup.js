@@ -71,7 +71,7 @@ class Signup extends React.Component {
 
 /* -----------------    CONTAINER     ------------------ */
 
-const mapState = () => ({ message: 'Sign up' })
+const mapState = () => ({ message: 'Sign up'})
 const mapDispatch = { signUp }
 
 export default connect(mapState, mapDispatch)(Signup);
