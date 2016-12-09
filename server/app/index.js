@@ -26,6 +26,10 @@ app.use(function (req, res, next) {
   next();
 });
 
+app.get('/auth/me', function(req,res,next){
+	res.send(req.session.user);
+})
+
 app.post('/login', function (req, res, next) {
   User.findOne({
     where: req.body
@@ -35,6 +39,7 @@ app.post('/login', function (req, res, next) {
       res.sendStatus(401);
     } else {
       req.session.userId = user.id;
+      req.session.user = user;
       res.json(user);
     }
   })

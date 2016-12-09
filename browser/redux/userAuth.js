@@ -29,6 +29,12 @@ export default function reducer (user = {}, action) {
 
 /* ------------       DISPATCHERS     ------------------ */
 
+export const fetchCurrentUser = () => dispatch => {
+  axios.get('/auth/me')
+    .then(res => dispatch(setUser(res.data)))
+    .catch(err => console.error('Fetching current user unsuccessful. ', error));
+}
+
 export const loginUser = (user) => dispatch => {
   axios.post('/login',user)
        .then(res => (dispatch(setUser(user))))

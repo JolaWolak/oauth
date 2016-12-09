@@ -60,7 +60,7 @@
 	
 	var _store2 = _interopRequireDefault(_store);
 	
-	var _Routes = __webpack_require__(244);
+	var _Routes = __webpack_require__(306);
 	
 	var _Routes2 = _interopRequireDefault(_Routes);
 	
@@ -24162,7 +24162,7 @@
 	
 	var _stories2 = _interopRequireDefault(_stories);
 	
-	var _userAuth = __webpack_require__(308);
+	var _userAuth = __webpack_require__(244);
 	
 	var _userAuth2 = _interopRequireDefault(_userAuth);
 	
@@ -25892,90 +25892,87 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+	exports.logout = exports.signUp = exports.loginUser = exports.fetchCurrentUser = undefined;
+	exports.default = reducer;
 	
-	var _react = __webpack_require__(1);
+	var _axios = __webpack_require__(218);
 	
-	var _react2 = _interopRequireDefault(_react);
-	
-	var _reactRedux = __webpack_require__(178);
+	var _axios2 = _interopRequireDefault(_axios);
 	
 	var _reactRouter = __webpack_require__(245);
 	
-	var _Root = __webpack_require__(306);
-	
-	var _Root2 = _interopRequireDefault(_Root);
-	
-	var _Home = __webpack_require__(310);
-	
-	var _Home2 = _interopRequireDefault(_Home);
-	
-	var _Login = __webpack_require__(311);
-	
-	var _Login2 = _interopRequireDefault(_Login);
-	
-	var _Signup = __webpack_require__(312);
-	
-	var _Signup2 = _interopRequireDefault(_Signup);
-	
-	var _UserList = __webpack_require__(313);
-	
-	var _UserList2 = _interopRequireDefault(_UserList);
-	
-	var _UserDetail = __webpack_require__(315);
-	
-	var _UserDetail2 = _interopRequireDefault(_UserDetail);
-	
-	var _StoryList = __webpack_require__(318);
-	
-	var _StoryList2 = _interopRequireDefault(_StoryList);
-	
-	var _StoryDetail = __webpack_require__(319);
-	
-	var _StoryDetail2 = _interopRequireDefault(_StoryDetail);
-	
-	var _users = __webpack_require__(217);
-	
-	var _stories = __webpack_require__(243);
-	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	/* -----------------    COMPONENT     ------------------ */
+	/* -----------------    ACTIONS     ------------------ */
 	
-	var Routes = function Routes(_ref) {
-	  var fetchInitialData = _ref.fetchInitialData;
-	  return _react2.default.createElement(
-	    _reactRouter.Router,
-	    { history: _reactRouter.browserHistory },
-	    _react2.default.createElement(
-	      _reactRouter.Route,
-	      { path: '/', component: _Root2.default, onEnter: fetchInitialData },
-	      _react2.default.createElement(_reactRouter.IndexRoute, { component: _Home2.default }),
-	      _react2.default.createElement(_reactRouter.Route, { path: 'login', component: _Login2.default }),
-	      _react2.default.createElement(_reactRouter.Route, { path: 'signup', component: _Signup2.default }),
-	      _react2.default.createElement(_reactRouter.Route, { path: 'users', component: _UserList2.default }),
-	      _react2.default.createElement(_reactRouter.Route, { path: 'users/:id', component: _UserDetail2.default }),
-	      _react2.default.createElement(_reactRouter.Route, { path: 'stories', component: _StoryList2.default }),
-	      _react2.default.createElement(_reactRouter.Route, { path: 'stories/:id', component: _StoryDetail2.default }),
-	      _react2.default.createElement(_reactRouter.Route, { path: '*', component: _Home2.default })
-	    )
-	  );
+	var SET_CURRENT_USER = 'SET_CURRENT_USER';
+	
+	/* ------------   ACTION CREATORS     ------------------ */
+	
+	var setUser = function setUser(user) {
+	  return { type: SET_CURRENT_USER, user: user };
 	};
 	
-	/* -----------------    CONTAINER     ------------------ */
+	/* ------------       REDUCER     ------------------ */
 	
-	var mapProps = null;
+	function reducer() {
+	  var user = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+	  var action = arguments[1];
 	
-	var mapDispatch = function mapDispatch(dispatch) {
-	  return {
-	    fetchInitialData: function fetchInitialData() {
-	      dispatch((0, _users.fetchUsers)());
-	      dispatch((0, _stories.fetchStories)());
-	      // what other data might we want to fetch on app load?
-	    }
+	  switch (action.type) {
+	
+	    case SET_CURRENT_USER:
+	      return action.user;
+	
+	    default:
+	      return user;
+	  }
+	}
+	
+	/* ------------       DISPATCHERS     ------------------ */
+	
+	var fetchCurrentUser = exports.fetchCurrentUser = function fetchCurrentUser() {
+	  return function (dispatch) {
+	    _axios2.default.get('/auth/me').then(function (res) {
+	      return dispatch(setUser(res.data));
+	    }).catch(function (err) {
+	      return console.error('Fetching current user unsuccessful. ', error);
+	    });
 	  };
 	};
 	
-	exports.default = (0, _reactRedux.connect)(mapProps, mapDispatch)(Routes);
+	var loginUser = exports.loginUser = function loginUser(user) {
+	  return function (dispatch) {
+	    _axios2.default.post('/login', user).then(function (res) {
+	      return dispatch(setUser(user));
+	    }).catch(function (error) {
+	      return console.error('Not able to login the user ', error);
+	    });
+	    _reactRouter.browserHistory.push('/');
+	  };
+	};
+	
+	var signUp = exports.signUp = function signUp(user) {
+	  return function (dispatch) {
+	    _axios2.default.post('/signup', user).then(function (res) {
+	      return dispatch(setUser(user));
+	    }).catch(function (error) {
+	      return console.error('User could not be created', error);
+	    });
+	    _reactRouter.browserHistory.push('/');
+	  };
+	};
+	
+	var logout = exports.logout = function logout() {
+	  return function (dispatch) {
+	    _axios2.default.post('/logout').then(function (res) {
+	      return dispatch(setUser({}));
+	    }).catch(function (error) {
+	      return console.error('Logout unsuccessful ', error);
+	    });
+	    _reactRouter.browserHistory.push('/');
+	  };
+	};
 
 /***/ },
 /* 245 */
@@ -31529,7 +31526,104 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _Navbar = __webpack_require__(307);
+	var _reactRedux = __webpack_require__(178);
+	
+	var _reactRouter = __webpack_require__(245);
+	
+	var _Root = __webpack_require__(307);
+	
+	var _Root2 = _interopRequireDefault(_Root);
+	
+	var _Home = __webpack_require__(310);
+	
+	var _Home2 = _interopRequireDefault(_Home);
+	
+	var _Login = __webpack_require__(311);
+	
+	var _Login2 = _interopRequireDefault(_Login);
+	
+	var _Signup = __webpack_require__(312);
+	
+	var _Signup2 = _interopRequireDefault(_Signup);
+	
+	var _UserList = __webpack_require__(313);
+	
+	var _UserList2 = _interopRequireDefault(_UserList);
+	
+	var _UserDetail = __webpack_require__(315);
+	
+	var _UserDetail2 = _interopRequireDefault(_UserDetail);
+	
+	var _StoryList = __webpack_require__(318);
+	
+	var _StoryList2 = _interopRequireDefault(_StoryList);
+	
+	var _StoryDetail = __webpack_require__(319);
+	
+	var _StoryDetail2 = _interopRequireDefault(_StoryDetail);
+	
+	var _users = __webpack_require__(217);
+	
+	var _stories = __webpack_require__(243);
+	
+	var _userAuth = __webpack_require__(244);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	/* -----------------    COMPONENT     ------------------ */
+	
+	var Routes = function Routes(_ref) {
+	  var fetchInitialData = _ref.fetchInitialData;
+	  return _react2.default.createElement(
+	    _reactRouter.Router,
+	    { history: _reactRouter.browserHistory },
+	    _react2.default.createElement(
+	      _reactRouter.Route,
+	      { path: '/', component: _Root2.default, onEnter: fetchInitialData },
+	      _react2.default.createElement(_reactRouter.IndexRoute, { component: _Home2.default }),
+	      _react2.default.createElement(_reactRouter.Route, { path: 'login', component: _Login2.default }),
+	      _react2.default.createElement(_reactRouter.Route, { path: 'signup', component: _Signup2.default }),
+	      _react2.default.createElement(_reactRouter.Route, { path: 'users', component: _UserList2.default }),
+	      _react2.default.createElement(_reactRouter.Route, { path: 'users/:id', component: _UserDetail2.default }),
+	      _react2.default.createElement(_reactRouter.Route, { path: 'stories', component: _StoryList2.default }),
+	      _react2.default.createElement(_reactRouter.Route, { path: 'stories/:id', component: _StoryDetail2.default }),
+	      _react2.default.createElement(_reactRouter.Route, { path: '*', component: _Home2.default })
+	    )
+	  );
+	};
+	
+	/* -----------------    CONTAINER     ------------------ */
+	
+	var mapProps = null;
+	
+	var mapDispatch = function mapDispatch(dispatch) {
+	  return {
+	    fetchInitialData: function fetchInitialData() {
+	      dispatch((0, _userAuth.fetchCurrentUser)());
+	      dispatch((0, _users.fetchUsers)());
+	      dispatch((0, _stories.fetchStories)());
+	      // what other data might we want to fetch on app load?
+	    }
+	  };
+	};
+	
+	exports.default = (0, _reactRedux.connect)(mapProps, mapDispatch)(Routes);
+
+/***/ },
+/* 307 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _Navbar = __webpack_require__(308);
 	
 	var _Navbar2 = _interopRequireDefault(_Navbar);
 	
@@ -31551,7 +31645,7 @@
 	};
 
 /***/ },
-/* 307 */
+/* 308 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -31574,7 +31668,7 @@
 	
 	var _reactRouter = __webpack_require__(245);
 	
-	var _userAuth = __webpack_require__(308);
+	var _userAuth = __webpack_require__(244);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -31722,87 +31816,6 @@
 	var mapDispatch = { logout: _userAuth.logout };
 	
 	exports.default = (0, _reactRedux.connect)(mapProps, mapDispatch)(Navbar);
-
-/***/ },
-/* 308 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.logout = exports.signUp = exports.loginUser = undefined;
-	exports.default = reducer;
-	
-	var _axios = __webpack_require__(218);
-	
-	var _axios2 = _interopRequireDefault(_axios);
-	
-	var _reactRouter = __webpack_require__(245);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	/* -----------------    ACTIONS     ------------------ */
-	
-	var SET_CURRENT_USER = 'SET_CURRENT_USER';
-	
-	/* ------------   ACTION CREATORS     ------------------ */
-	
-	var setUser = function setUser(user) {
-	  return { type: SET_CURRENT_USER, user: user };
-	};
-	
-	/* ------------       REDUCER     ------------------ */
-	
-	function reducer() {
-	  var user = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-	  var action = arguments[1];
-	
-	  switch (action.type) {
-	
-	    case SET_CURRENT_USER:
-	      return action.user;
-	
-	    default:
-	      return user;
-	  }
-	}
-	
-	/* ------------       DISPATCHERS     ------------------ */
-	
-	var loginUser = exports.loginUser = function loginUser(user) {
-	  return function (dispatch) {
-	    _axios2.default.post('/login', user).then(function (res) {
-	      return dispatch(setUser(user));
-	    }).catch(function (error) {
-	      return console.error('Not able to login the user ', error);
-	    });
-	    _reactRouter.browserHistory.push('/');
-	  };
-	};
-	
-	var signUp = exports.signUp = function signUp(user) {
-	  return function (dispatch) {
-	    _axios2.default.post('/signup', user).then(function (res) {
-	      return dispatch(setUser(user));
-	    }).catch(function (error) {
-	      return console.error('User could not be created', error);
-	    });
-	    _reactRouter.browserHistory.push('/');
-	  };
-	};
-	
-	var logout = exports.logout = function logout() {
-	  return function (dispatch) {
-	    _axios2.default.post('/logout').then(function (res) {
-	      return dispatch(setUser({}));
-	    }).catch(function (error) {
-	      return console.error('Logout unsuccessful ', error);
-	    });
-	    _reactRouter.browserHistory.push('/');
-	  };
-	};
 
 /***/ },
 /* 309 */
@@ -31995,7 +32008,7 @@
 	
 	var _reactRouter = __webpack_require__(245);
 	
-	var _userAuth = __webpack_require__(308);
+	var _userAuth = __webpack_require__(244);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -32152,7 +32165,7 @@
 	
 	var _reactRouter = __webpack_require__(245);
 	
-	var _userAuth = __webpack_require__(308);
+	var _userAuth = __webpack_require__(244);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
