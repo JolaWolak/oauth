@@ -12,6 +12,7 @@ app.use(session({
 	secret: 'Grace Hopper rules'
 }));
 
+
 // counter middleware
 app.use('/api', function (req, res, next) {
   if (!req.session.counter) req.session.counter = 0;
@@ -23,6 +24,21 @@ app.use('/api', function (req, res, next) {
 app.use(function (req, res, next) {
   console.log('session', req.session);
   next();
+});
+
+app.post('/login', function (req, res, next) {
+  User.findOne({
+    where: req.body
+  })
+  .then(function (user) {
+    if (!user) {
+      res.sendStatus(401);
+    } else {
+      req.session.userId = user.id;
+      res.sendStatus(204);
+    }
+  })
+  .catch(next);
 });
 
 app.use('/api', require('../api/api.router'));
