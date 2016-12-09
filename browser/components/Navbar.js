@@ -1,6 +1,8 @@
 import React from 'react';
+import axios from 'axios';
 import { connect } from'react-redux';
 import { Link, browserHistory } from 'react-router';
+import { logout } from '../redux/userAuth';
 
 /* -----------------    COMPONENT     ------------------ */
 
@@ -75,7 +77,9 @@ const mapProps = null;
 
 const mapDispatch = dispatch => ({
   logout: () => {
-    console.log('You signed out. Sorta.')
+    axios.post('/logout')
+      .then(res => console.log('You signed out. ', res))
+      .catch(error => console.error('Logout unsuccessful ', error)); 
     browserHistory.push('/');
   }
 })

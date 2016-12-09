@@ -27,23 +27,34 @@ app.use(function (req, res, next) {
 });
 
 app.post('/login', function (req, res, next) {
-  console.log('inside app.post : ', req.body);
   User.findOne({
     where: req.body
   })
   .then(function (user) {
     if (!user) {
-      console.log('NOT FOUND!!! ');
       res.sendStatus(401);
     } else {
       req.session.userId = user.id;
-      console.log('FOUND IT !!! ', req.session);
-      console.log('USER is : ',user);
       res.json(user);
     }
   })
   .catch(next);
 });
+
+app.post('/signup', function(req,res,next){
+	User.create(req.body)
+	.then(function(user){
+		req.session.userId = user.id;
+		res.json(user)
+	})
+	.catch(next)
+})
+
+app.post('/logout', function(req, res, next){
+	if(req.session) req.session.destroy();
+	res.sendStatus(200);
+
+})
 
 app.use('/api', require('../api/api.router'));
 

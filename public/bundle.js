@@ -31562,9 +31562,15 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
+	var _axios = __webpack_require__(218);
+	
+	var _axios2 = _interopRequireDefault(_axios);
+	
 	var _reactRedux = __webpack_require__(178);
 	
 	var _reactRouter = __webpack_require__(245);
+	
+	var _userAuth = __webpack_require__(321);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -31705,7 +31711,11 @@
 	var mapDispatch = function mapDispatch(dispatch) {
 	  return {
 	    logout: function logout() {
-	      console.log('You signed out. Sorta.');
+	      _axios2.default.post('/logout').then(function (res) {
+	        return console.log('You signed out. ', res);
+	      }).catch(function (error) {
+	        return console.error('Logout unsuccessful ', error);
+	      });
 	      _reactRouter.browserHistory.push('/');
 	    }
 	  };
@@ -31904,7 +31914,7 @@
 	
 	var _reactRouter = __webpack_require__(245);
 	
-	var _login = __webpack_require__(311);
+	var _userAuth = __webpack_require__(321);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -32038,66 +32048,11 @@
 	var mapState = function mapState() {
 	  return { message: 'Log in' };
 	};
-	var mapDispatch = { loginUser: _login.loginUser };
+	var mapDispatch = { loginUser: _userAuth.loginUser };
 	exports.default = (0, _reactRedux.connect)(mapState, mapDispatch)(Login);
 
 /***/ },
-/* 311 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.loginUser = undefined;
-	exports.default = reducer;
-	
-	var _axios = __webpack_require__(218);
-	
-	var _axios2 = _interopRequireDefault(_axios);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	/* -----------------    ACTIONS     ------------------ */
-	
-	var SET_CURRENT_USER = 'SET_CURRENT_USER';
-	
-	/* ------------   ACTION CREATORS     ------------------ */
-	
-	var setUser = function setUser(user) {
-	  return { type: SET_CURRENT_USER, user: user };
-	};
-	
-	/* ------------       REDUCER     ------------------ */
-	
-	function reducer() {
-	  var user = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-	  var action = arguments[1];
-	
-	  switch (action.type) {
-	
-	    case SET_CURRENT_USER:
-	      return action.user;
-	
-	    default:
-	      return user;
-	  }
-	}
-	
-	/* ------------       DISPATCHERS     ------------------ */
-	
-	var loginUser = exports.loginUser = function loginUser(user) {
-	  return function (dispatch) {
-	    _axios2.default.post('/login', user).then(function (res) {
-	      return console.log('We authenticated user : ', res);
-	    }).catch(function (error) {
-	      return console.error('Not able to login the user ' + error);
-	    });
-	  };
-	};
-
-/***/ },
+/* 311 */,
 /* 312 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -32116,6 +32071,8 @@
 	var _reactRedux = __webpack_require__(178);
 	
 	var _reactRouter = __webpack_require__(245);
+	
+	var _userAuth = __webpack_require__(321);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -32232,7 +32189,11 @@
 	      var message = this.props.message;
 	
 	      event.preventDefault();
-	      console.log(message + ' isn\'t implemented yet');
+	      var user = {
+	        email: event.target.email.value,
+	        password: event.target.password.value
+	      };
+	      this.props.signUp(user);
 	    }
 	  }]);
 	
@@ -32244,7 +32205,7 @@
 	var mapState = function mapState() {
 	  return { message: 'Sign up' };
 	};
-	var mapDispatch = null;
+	var mapDispatch = { signUp: _userAuth.signUp };
 	
 	exports.default = (0, _reactRedux.connect)(mapState, mapDispatch)(Signup);
 
@@ -50446,6 +50407,72 @@
 	
 	exports.default = ContentEditable;
 	module.exports = exports['default'];
+
+/***/ },
+/* 321 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.signUp = exports.loginUser = undefined;
+	exports.default = reducer;
+	
+	var _axios = __webpack_require__(218);
+	
+	var _axios2 = _interopRequireDefault(_axios);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	/* -----------------    ACTIONS     ------------------ */
+	
+	var SET_CURRENT_USER = 'SET_CURRENT_USER';
+	
+	/* ------------   ACTION CREATORS     ------------------ */
+	
+	var setUser = function setUser(user) {
+	  return { type: SET_CURRENT_USER, user: user };
+	};
+	
+	/* ------------       REDUCER     ------------------ */
+	
+	function reducer() {
+	  var user = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+	  var action = arguments[1];
+	
+	  switch (action.type) {
+	
+	    case SET_CURRENT_USER:
+	      return action.user;
+	
+	    default:
+	      return user;
+	  }
+	}
+	
+	/* ------------       DISPATCHERS     ------------------ */
+	
+	var loginUser = exports.loginUser = function loginUser(user) {
+	  return function (dispatch) {
+	    _axios2.default.post('/login', user).then(function (res) {
+	      return console.log('We authenticated user : ', res);
+	    }).catch(function (error) {
+	      return console.error('Not able to login the user ', error);
+	    });
+	  };
+	};
+	
+	var signUp = exports.signUp = function signUp(user) {
+	  return function (dispatch) {
+	    _axios2.default.post('/signup', user).then(function (res) {
+	      return console.log('User created: ', res);
+	    }).catch(function (error) {
+	      return console.error('User could not be created', error);
+	    });
+	  };
+	};
 
 /***/ }
 /******/ ]);
